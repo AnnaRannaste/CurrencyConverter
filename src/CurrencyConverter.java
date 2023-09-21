@@ -12,57 +12,57 @@ import java.util.Scanner;
 
 public class CurrencyConverter {
     public static void main(String[] args) throws IOException {
-Boolean running = true;
-        do{
-        HashMap<Integer, String> currencyCodes = new HashMap<Integer, String>();
-        //Add currency codes
-        currencyCodes.put(1, "USD");
-        currencyCodes.put(2, "CAD");
-        currencyCodes.put(3, "EUR");
-        currencyCodes.put(4, "HKD");
-        currencyCodes.put(5, "INR");
+        Boolean running = true;
+        do {
+            HashMap<Integer, String> currencyCodes = new HashMap<Integer, String>();
+            //Add currency codes
+            currencyCodes.put(1, "USD");
+            currencyCodes.put(2, "CAD");
+            currencyCodes.put(3, "EUR");
+            currencyCodes.put(4, "HKD");
+            currencyCodes.put(5, "INR");
 
-        Integer from, to;
-        String fromCode, toCode;
-        double amount;
+            Integer from, to;
+            String fromCode, toCode;
+            double amount;
 
-    Scanner sc = new Scanner(System.in);
+            Scanner sc = new Scanner(System.in);
 
-        System.out.println("Welcome to the currency converter!");
-        System.out.println("Currency converting FROM?");
-        System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
+            System.out.println("Welcome to the currency converter!");
+            System.out.println("Currency converting FROM?");
+            System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
 
-    from= sc.nextInt();
-    while(from < 1 || from >= 5) {
-    System.out.println("Please select a valid currency (1-5)");
-        System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
-        from= sc.nextInt();
-}
-    fromCode = currencyCodes.get(from);
+            from = sc.nextInt();
+            while (from < 1 || from >= 5) {
+                System.out.println("Please select a valid currency (1-5)");
+                System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
+                from = sc.nextInt();
+            }
+            fromCode = currencyCodes.get(from);
 
-        System.out.println("Currency converting TO?");
-        System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
+            System.out.println("Currency converting TO?");
+            System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
 
-        to= sc.nextInt();
-        while(to < 1 || to >= 5) {
-        System.out.println("Please select a valid currency (1-5)");
-        System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
-        to= sc.nextInt();
-    }
-    toCode = currencyCodes.get(to);
+            to = sc.nextInt();
+            while (to < 1 || to >= 5) {
+                System.out.println("Please select a valid currency (1-5)");
+                System.out.println("1:USD (US Dollar) \t 2:CAD (Canadian Dollar) \t 3:EUR (Euro) \t 4:HKD (Hong Kong Dollar \t 5:INR (Indin Rupee)");
+                to = sc.nextInt();
+            }
+            toCode = currencyCodes.get(to);
 
 
-        System.out.println("Amount you wish to convert?");
-        amount = sc.nextFloat();
+            System.out.println("Amount you wish to convert?");
+            amount = sc.nextFloat();
 
-        sendHttpGETRequest(fromCode, toCode, amount);
+            sendHttpGETRequest(fromCode, toCode, amount);
             System.out.println("Would you like to make another conversion?");
             System.out.println("1:Yes \t Any other integer: No");
-            if(sc.nextInt() !=1) {
+            if (sc.nextInt() != 1) {
                 running = false;
             }
 
-    } while(running);
+        } while (running);
         System.out.println("Thank you for using the currency converter!");
     }
 
@@ -76,24 +76,24 @@ Boolean running = true;
         httpURLConnection.setRequestMethod("GET");
         int responseCode = httpURLConnection.getResponseCode();
 
-        if(responseCode == HttpURLConnection.HTTP_OK) { //success
+        if (responseCode == HttpURLConnection.HTTP_OK) { //success
             BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             String inputLine;
             StringBuffer response = new StringBuffer();
 
-            while((inputLine = in.readLine()) !=null) {
+            while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
-            }in.close();
+            }
+            in.close();
             JSONObject obj = new JSONObject(response.toString());
 
             Double exchangeRate = obj.getJSONObject("rates").getDouble(fromCode);
             System.out.println(obj.getJSONObject("rates"));
             System.out.println(exchangeRate); //keep for debugging
             System.out.println();
-            System.out.println(f.format(amount) + fromCode + "=" + f.format(amount/exchangeRate) + toCode);
+            System.out.println(f.format(amount) + fromCode + "=" + f.format(amount / exchangeRate) + toCode);
 
-            }
-        else {
+        } else {
             System.out.println("GET request failed");
         }
 
